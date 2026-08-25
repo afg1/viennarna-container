@@ -10,19 +10,15 @@ on:
 
 
 jobs:
+  docker_publish:
+    runs-on: "ubuntu-20.04"
 
-  create-docker-image:
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - name: docker build
-        run: |
-          docker build \
-            -t afg1/viennarna:latest \
-            -f Dockerfile .
-
-      - name: "Push to ghcr"
-        run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
-          singularity push afg1-viennarna-latest-${{ inputs.tag }}.sif oras://ghcr.io/${GITHUB_REPOSITORY}:latest
+      # https://github.com/marketplace/actions/push-to-ghcr
+      - name: Build and publish a Docker image for ${{ github.repository }}
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: ${{ github.repository }}  # it will be lowercased internally
+          github_token: ${{ secrets.GITHUB_TOKEN }}
