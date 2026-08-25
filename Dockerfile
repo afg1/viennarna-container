@@ -4,3 +4,4 @@ RUN apt update && apt install -y build-essential git make wget libopenmpi-dev &&
 
 RUN wget https://www.tbi.univie.ac.at/RNA/download/debian/debian_13/viennarna-dev_2.7.2-1_amd64.deb
 RUN apt update && apt install -y ./viennarna-dev_2.7.2-1_amd64.deb && rm viennarna-dev_2.7.2-1_amd64.deb
+
