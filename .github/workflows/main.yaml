@@ -1,0 +1,28 @@
+name: Building ViennaRNA container
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+ push:
+  paths: ['Dockerfile']
+
+
+jobs:
+
+  create-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: docker build
+        run: |
+          docker build \
+            -t afg1/viennarna:latest \
+            -f Dockerfile .
+
+      - name: "Push to ghcr"
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
+          singularity push afg1-viennarna-latest-${{ inputs.tag }}.sif oras://ghcr.io/${GITHUB_REPOSITORY}:latest
